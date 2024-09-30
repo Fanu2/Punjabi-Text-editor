@@ -11,7 +11,7 @@ const punjabiKeys = [
     ['ਏ', 'ੲੈ', 'ਓ', 'ਔ', 'ੌ', '੭', '੮', '੯', '੬', '੮'] // Row 6
 ];
 
-const PunjabiKeyboard = ({ onKeyPress }) => {
+const PunjabiKeyboard = () => {  // Removed `onKeyPress` prop
     const [fontSize, setFontSize] = useState('20px');
     const [fontColor, setFontColor] = useState('#000000');
     const [bgColor, setBgColor] = useState('#ffffff');
