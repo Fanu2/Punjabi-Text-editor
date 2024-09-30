@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Lohit Punjabi';
+  src: url('/fonts/lohit.punjabi.1.1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Lohit Punjabi', sans-serif; /* Default font for body */
+}
