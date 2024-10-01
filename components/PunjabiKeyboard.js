@@ -8,10 +8,10 @@ const punjabiKeys = [
     ['ਟ', 'ਠ', 'ਡ', 'ਢ', 'ਣ', 'ਤ', 'ਥ', 'ਦ', 'ਧ', 'ਨ'], // Row 3
     ['ਪ', 'ਫ', 'ਬ', 'ਭ', 'ਮ', 'ਯ', 'ਰ', 'ਲ', 'ਵ', 'ਹ'], // Row 4
     ['ਸ', 'ਸ਼', 'ਜ', 'ਜ਼', 'ਖ਼', 'ਗ਼', 'ਲ਼', 'ੵ', 'ਫ਼', '਼'], // Row 5
-    ['ਏ', 'ੲੈ', 'ਓ', 'ਔ', 'ੌ', '੭', '੮', '੯', '੬', '੮'] // Row 6
+    ['ਏ', 'ੲੈ', 'ਓ', 'ਔ', 'ੌ', '-', 'ੌ', 'ੋ', 'ੈ', 'ੇ'] // Row 6
 ];
 
-const PunjabiKeyboard = () => {  // Removed `onKeyPress` prop
+const PunjabiKeyboard = () => {
     const [fontSize, setFontSize] = useState('20px');
     const [fontColor, setFontColor] = useState('#000000');
     const [bgColor, setBgColor] = useState('#ffffff');
@@ -20,21 +20,29 @@ const PunjabiKeyboard = () => {  // Removed `onKeyPress` prop
 
     const handleKeyPress = (key) => {
         const textarea = textareaRef.current;
-        const cursorPos = textarea.selectionStart; // Get current cursor position
+        const cursorPos = textarea.selectionStart;
 
-        // Update text
+        // Insert key at current cursor position
         const newText = text.slice(0, cursorPos) + key + text.slice(cursorPos);
         setText(newText);
 
-        // Reset cursor position
+        // Move the cursor forward and focus back on textarea
         setTimeout(() => {
             textarea.selectionStart = textarea.selectionEnd = cursorPos + key.length;
-            textarea.focus(); // Bring focus back to the textarea
+            textarea.focus();
         }, 0);
     };
 
     const handleInputChange = (e) => {
         setText(e.target.value);
+    };
+
+    const handlePaste = () => {
+        if (navigator.clipboard) {
+            navigator.clipboard.readText().then(clipText => setText(prev => prev + clipText));
+        } else {
+            alert("Clipboard functionality is not supported in this browser.");
+        }
     };
 
     return (
@@ -58,14 +66,13 @@ const PunjabiKeyboard = () => {  // Removed `onKeyPress` prop
                     onChange={(e) => setBgColor(e.target.value)}
                     mb={2}
                 />
-                <Button onClick={() => navigator.clipboard.readText().then(clipText => setText(prev => prev + clipText))} colorScheme="teal" mb={2}>
+                <Button onClick={handlePaste} colorScheme="teal" mb={2}>
                     Paste from Clipboard
                 </Button>
                 <Textarea
                     ref={textareaRef}
                     value={text}
                     onChange={handleInputChange}
-                    size="lg"
                     resize="none"
                     placeholder="Type or paste your text here..."
                     fontSize={fontSize}
@@ -74,24 +81,20 @@ const PunjabiKeyboard = () => {  // Removed `onKeyPress` prop
                 />
             </Box>
             <Grid templateColumns="repeat(10, 1fr)" gap={1}>
-                {punjabiKeys.map((row, rowIndex) => (
-                    <React.Fragment key={rowIndex}>
-                        {row.map((key, index) => (
-                            <Button
-                                key={index}
-                                onClick={() => handleKeyPress(key)} // Use local handleKeyPress
-                                size="lg"
-                                variant="outline"
-                                width="100%"
-                                height="50px"
-                                fontSize={fontSize}
-                                color={fontColor}
-                                backgroundColor={bgColor}
-                            >
-                                {key}
-                            </Button>
-                        ))}
-                    </React.Fragment>
+                {punjabiKeys.flat().map((key, index) => (
+                    <Button
+                        key={index}
+                        onClick={() => handleKeyPress(key)}
+                        size="lg"
+                        variant="outline"
+                        width="100%"
+                        height="50px"
+                        fontSize={fontSize}
+                        color={fontColor}
+                        backgroundColor={bgColor}
+                    >
+                        {key}
+                    </Button>
                 ))}
             </Grid>
         </Box>
