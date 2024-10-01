@@ -8,7 +8,7 @@ const punjabiKeys = [
     ['ਟ', 'ਠ', 'ਡ', 'ਢ', 'ਣ', 'ਤ', 'ਥ', 'ਦ', 'ਧ', 'ਨ'], // Row 3
     ['ਪ', 'ਫ', 'ਬ', 'ਭ', 'ਮ', 'ਯ', 'ਰ', 'ਲ', 'ਵ', 'ਹ'], // Row 4
     ['ਸ', 'ਸ਼', 'ਜ', 'ਜ਼', 'ਖ਼', 'ਗ਼', 'ਲ਼', 'ੵ', 'ਫ਼', '਼'], // Row 5
-    ['ਏ', 'ੲੈ', 'ਓ', 'ਔ', 'ੌ', '੭', '੮', '੯', '੬', '੮'] // Row 6
+    ['ਏ', 'ੲੈ', 'ਓ', 'ਔ', 'ੌ', 'ੇ', 'ੋ', 'ੈ', 'ਉ', 'ੳ']  // Row 6
 ];
 
 const PunjabiKeyboard = () => {
@@ -17,18 +17,18 @@ const PunjabiKeyboard = () => {
     const [bgColor, setBgColor] = useState('#ffffff');
     const [text, setText] = useState('');
 
-    const handlePaste = () => {
-        navigator.clipboard.readText().then(clipText => {
-            setText(prev => prev + clipText);
-        });
+    const handleKeyPress = (key) => {
+        setText(prev => prev + key); // Append the pressed key to the text
     };
 
     const handleInputChange = (e) => {
         setText(e.target.value);
     };
 
-    const handleKeyPress = (key) => {
-        setText(prev => prev + key); // Append the pressed key to the text
+    const handlePaste = () => {
+        navigator.clipboard.readText().then(clipText => {
+            setText(prev => prev + clipText);
+        });
     };
 
     return (
@@ -62,28 +62,24 @@ const PunjabiKeyboard = () => {
                     fontSize={fontSize}
                     color={fontColor}
                     backgroundColor={bgColor}
-                    height="200px" // Increased height for better usability
+                    height="200px" // Adjust height as needed
                 />
             </Box>
             <Grid templateColumns="repeat(10, 1fr)" gap={1}>
-                {punjabiKeys.map((row, rowIndex) => (
-                    <React.Fragment key={rowIndex}>
-                        {row.map((key, index) => (
-                            <Button
-                                key={index}
-                                onClick={() => handleKeyPress(key)} // Call handleKeyPress on button click
-                                size="lg"
-                                variant="outline"
-                                width="100%"
-                                height="50px"
-                                fontSize={fontSize}
-                                color={fontColor}
-                                backgroundColor={bgColor}
-                            >
-                                {key}
-                            </Button>
-                        ))}
-                    </React.Fragment>
+                {punjabiKeys.flat().map((key, index) => ( // Directly map all keys
+                    <Button
+                        key={index}
+                        onClick={() => handleKeyPress(key)}
+                        size="lg"
+                        variant="outline"
+                        width="100%"
+                        height="50px"
+                        fontSize={fontSize}
+                        color={fontColor}
+                        backgroundColor={bgColor}
+                    >
+                        {key}
+                    </Button>
                 ))}
             </Grid>
         </Box>
